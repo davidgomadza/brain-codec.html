@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Codec System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #00ff88;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ff88;
+        }
+
+        .panel {
+            background: rgba(0, 40, 80, 0.8);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input, button {
+            padding: 10px;
+            border: 1px solid #00ff88;
+            background: #000;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+        }
+
+        button {
+            cursor: pointer;
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: #000;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #00cc66, #00aa44);
+        }
+
+        .terminal {
+            background: #000;
+            color: #00ff88;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #00ff88;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .visualization {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .exit-port, .entry-port {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #00ff88;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .signal-path {
+            flex-grow: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #00ff88, transparent);
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .signal {
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            position: absolute;
+            top: -4px;
+            animation: moveSignal 3s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        @keyframes moveSignal {
+            0% { left: 0; }
+            100% { left: 100%; }
+        }
+
+        .decoded-output {
+            background: #001122;
+            padding: 15px;
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .warning {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Brain Codec System</h1>
+        <div class="warning">
+            ⚠️ THEORETICAL INTERFACE: This system is based on unverified concepts from "Encyclopedia of Decoding the Brain." It does not represent real neurotechnology.
+        </div>
+
+        <div class="panel">
+            <h2>Input Thought for Decoding</h2>
+            <div class="input-area">
+                <input type="text" id="thoughtInput" placeholder="Enter a thought or word...">
+                <button onclick="encodeThought()">Encode Thought</button>
+                <button onclick="decodeThought()">Decode Thought</button>
+            </div>
+            <div class="terminal" id="terminal">
+                > System ready. Enter a thought to begin decoding...
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="exit-port">Exit Port</div>
+            <div class="signal-path">
+                <div class="signal"></div>
+            </div>
+            <div class="entry-port">Entry Port</div>
+        </div>
+
+        <div class="panel">
+            <h2>Decoded Output</h2>
+            <div class="decoded-output" id="decodedOutput">
+                No data decoded yet.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>CNB Wearable Brain Reader System Integration</h2>
+            <p>This system simulates the "Central Nerve Bridge" concept described in the book. The CNB is used to capture electromagnetic thought waves emitted from the Exit Port and received at the Entry Port.</p>
+            <button onclick="simulateCNB()">Simulate CNB Capture</button>
+            <div class="terminal" id="cnbTerminal">
+                > CNB system standby...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const thoughtDatabase = {
+            "love": "Emotion: Affectionate feeling",
+            "hungry": "Body need: Desire for nourishment",
+            "son": "Family: Male child",
+            "dream": "Subconscious: Series of thoughts during sleep",
+            "god": "Spiritual: Supreme being",
+            "money": "Material: Medium of exchange",
+            "hello": "Communication: Greeting",
+            "danger": "Survival: Threat detected"
+        };
+
+        const terminal = document.getElementById('terminal');
+        const cnbTerminal = document.getElementById('cnbTerminal');
+        const decodedOutput = document.getElementById('decodedOutput');
+
+        function logTerminal(message) {
+            terminal.innerHTML += `<br>${message}`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function logCNB(message) {
+            cnbTerminal.innerHTML += `<br>${message}`;
+            cnbTerminal.scrollTop = cnbTerminal.scrollHeight;
+        }
+
+        function encodeThought() {
+            const input = document.getElementById('thoughtInput').value.trim().toLowerCase();
+            if (!input) {
+                logTerminal("> ERROR: No input provided.");
+                return;
+            }
+
+            logTerminal(`> Encoding thought: "${input}"`);
+            logTerminal("> Converting to electromagnetic wave pattern...");
+            logTerminal("> Transmitting from Exit Port...");
+
+            setTimeout(() => {
+                const code = Array.from(input).map(c => c.charCodeAt(0)).join('-');
+                logTerminal(`> Encoded signal: WAVE_${code}_EM`);
+                logTerminal("> Signal emitted from right-side Exit Port.");
+            }, 1500);
+        }
+
+        function decodeThought() {
+            const input = document.getElementById('thoughtInput').value.trim().toLowerCase();
+            if (!input) {
+                logTerminal("> ERROR: No input to decode.");
+                return;
+            }
+
+            logTerminal(`> Decoding thought: "${input}"`);
+            logTerminal("> Capturing electromagnetic wave at Entry Port...");
+            logTerminal("> Converting wave to binary impulses...");
+
+            setTimeout(() => {
+                logTerminal("> Processing in revelation chamber...");
+                
+                // "Decode" the thought
+                const interpretation = thoughtDatabase[input] || "Unknown thought pattern. Not in database.";
+                decodedOutput.innerHTML = `
+                    <strong>Decoded Thought:</strong> "${input}"<br>
+                    <strong>Interpretation:</strong> ${interpretation}<br>
+                    <strong>Confidence:</strong> ${Math.floor(Math.random() * 100)}%
+                `;
+                
+                logTerminal("> Decoding complete.");
+            }, 2000);
+        }
+
+        function simulateCNB() {
+            logCNB("> Scanning for Central Nerve Bridge...");
+            logCNB("> WARNING: CNB not found in standard anatomy.");
+            logCNB("> Switching to theoretical mode...");
+            
+            setTimeout(() => {
+                logCNB("> Capturing electromagnetic thought waves...");
+                logCNB("> Converting via rotary propeller simulation...");
+                logCNB("> Thought processed: 'THEORETICAL_SAMPLE'");
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
